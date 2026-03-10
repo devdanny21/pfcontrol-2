@@ -28,7 +28,7 @@ async function ensureDatabasesExist() {
   const isLocalhost =
     url.hostname === 'localhost' ||
     url.hostname === '127.0.0.1' ||
-    url.hostname === 'postgres'; // irgendwer hat verschiedene docker gemacht deswegen wird postgres benötigt
+    url.hostname === 'postgres';
 
   const client = new pg.Client({
     connectionString: baseConnectionString,
