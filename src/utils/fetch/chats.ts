@@ -4,7 +4,19 @@ export async function fetchChatMessages(sessionId: string) {
   const res = await fetch(`${API_BASE_URL}/api/chats/${sessionId}`, {
     credentials: 'include',
   });
-  if (!res.ok) throw new Error('Failed to fetch chat messages');
+  if (!res.ok) {
+    const error = new Error('Failed to fetch chat messages') as Error & {
+      status: number;
+      body?: unknown;
+    };
+    error.status = res.status;
+    try {
+      error.body = await res.json();
+    } catch {
+      // ignore body parse errors
+    }
+    throw error;
+  }
   return res.json();
 }
 

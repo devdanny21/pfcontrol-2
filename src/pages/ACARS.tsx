@@ -22,7 +22,6 @@ import { getChartsForAirport, playNotificationSound } from '../utils/acars';
 import { createChartHandlers } from '../utils/charts';
 import type { AcarsMessage } from '../types/acars';
 import type { Flight } from '../types/flight';
-
 import AcarsSidebar from '../components/acars/AcarsSidebar';
 import AcarsTerminal from '../components/acars/AcarsTerminal';
 import AcarsNotePanel from '../components/acars/AcarsNotePanel';
@@ -416,6 +415,7 @@ NOTES:
 
   const handleRequestPDC = () => {
     if (!flight || !socketRef.current?.socket || pdcRequested) return;
+
     socketRef.current.socket.emit('requestPDC', {
       flightId: flight.id,
       callsign: flight.callsign,
@@ -435,6 +435,7 @@ NOTES:
 
   const handleAtisClick = (session: OverviewSession) => {
     if (!session.atis?.text) return;
+
     const atisMsg: AcarsMessage = {
       id: `${Date.now()}-atis`,
       timestamp: new Date().toISOString(),
@@ -676,6 +677,7 @@ NOTES:
             messagesEndRef={messagesEndRef}
             handleRequestPDC={handleRequestPDC}
             pdcRequested={pdcRequested}
+            canRequestPdc={true}
           />
         </div>
 
@@ -732,6 +734,7 @@ NOTES:
               messagesEndRef={messagesEndRef}
               handleRequestPDC={handleRequestPDC}
               pdcRequested={pdcRequested}
+              canRequestPdc={true}
             />
           )}
           {mobileTab === 'notes' && (
