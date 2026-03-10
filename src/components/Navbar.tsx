@@ -356,11 +356,6 @@ export default function Navbar({
                           Basic
                         </span>
                       )}
-                      {user.isAdmin && (
-                        <span className="bg-gradient-to-r from-emerald-300 to-emerald-500 bg-clip-text text-transparent italic text-md">
-                          Admin
-                        </span>
-                      )}
                     </>
                   )}
                 </span>
