@@ -5,7 +5,10 @@ export async function fetchChatMessages(sessionId: string) {
     credentials: 'include',
   });
   if (!res.ok) {
-    const error: any = new Error('Failed to fetch chat messages');
+    const error = new Error('Failed to fetch chat messages') as Error & {
+      status: number;
+      body?: unknown;
+    };
     error.status = res.status;
     try {
       error.body = await res.json();
