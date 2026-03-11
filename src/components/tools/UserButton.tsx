@@ -9,7 +9,7 @@ import {
   CreditCard,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/auth/useAuth';
-import { usePlan } from '../../hooks/billing/usePlan';
+import { usePlan, useEffectivePlan } from '../../hooks/billing/usePlan';
 import ProtectedRoute from '../ProtectedRoute';
 
 const API_BASE_URL = import.meta.env.VITE_SERVER_URL;
@@ -27,9 +27,10 @@ export default function CustomUserButton({
 }: CustomUserButtonProps) {
   const { user, isLoading, logout } = useAuth();
   const { plan, subscriptionCancelAtPeriodEnd } = usePlan();
+  const { effectivePlan } = useEffectivePlan();
 
   const subscriptionButtonLabel =
-    plan === 'free'
+    effectivePlan === 'free'
       ? 'Upgrade'
       : subscriptionCancelAtPeriodEnd
         ? 'Continue subscription'
@@ -129,7 +130,7 @@ export default function CustomUserButton({
           <button
             onClick={() =>
               handleAction(async () => {
-                if (plan === 'free') {
+                if (effectivePlan === 'free') {
                   window.location.href = '/pricing';
                   return;
                 }
@@ -273,7 +274,7 @@ export default function CustomUserButton({
             <button
               onClick={async () => {
                 setIsDropdownOpen(false);
-                if (plan === 'free') {
+                if (effectivePlan === 'free') {
                   window.location.href = '/pricing';
                   return;
                 }

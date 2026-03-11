@@ -11,16 +11,12 @@ export function comparePlans(userPlan: SubscriptionPlan, required: SubscriptionP
   return order.indexOf(userPlan) - order.indexOf(required);
 }
 
-const CANARY_HOST = 'canary.pfcontrol.com';
-
 export async function getUserPlan(
   userId: string,
   options?: { host?: string }
 ): Promise<SubscriptionPlan> {
   if (isAdmin(userId)) return 'ultimate';
-  const host = (options?.host ?? '').toLowerCase();
-  const isCanary = host === CANARY_HOST;
-  if (!isCanary && (await isTester(userId))) return 'ultimate';
+  if (await isTester(userId)) return 'ultimate';
 
   const user = await getUserById(userId);
   if (!user) return 'free';

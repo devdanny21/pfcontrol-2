@@ -176,11 +176,18 @@ router.post('/portal-session', requireAuth, async (req, res) => {
       email
     );
 
-    const frontendBaseUrl = process.env.FRONTEND_URL ?? 'http://localhost:5173';
-    const returnUrl =
-      typeof req.body?.returnUrl === 'string' && req.body.returnUrl
-        ? req.body.returnUrl
-        : `${frontendBaseUrl.replace(/\/$/, '')}/`;
+    const frontendBaseUrl = (process.env.FRONTEND_URL ?? 'http://localhost:5173').replace(/\/$/, '');
+    let returnUrl = `${frontendBaseUrl}/`;
+    if (typeof req.body?.returnUrl === 'string' && req.body.returnUrl) {
+      const raw = req.body.returnUrl as string;
+      if (raw.startsWith('http://') || raw.startsWith('https://')) {
+        if (raw.startsWith(frontendBaseUrl)) {
+          returnUrl = raw;
+        }
+      } else if (raw.startsWith('/')) {
+        returnUrl = `${frontendBaseUrl}${raw}`;
+      }
+    }
 
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: stripeCustomerId,

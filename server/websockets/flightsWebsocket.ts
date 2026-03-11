@@ -28,6 +28,8 @@ import { incrementStat } from '../utils/statisticsCache.js';
 import { logFlightAction } from '../db/flightLogs.js';
 import { isEventController } from '../middleware/flightAccess.js';
 import { broadcastFlightUpdate } from './overviewWebsocket.js';
+import { getUserPlan } from '../middleware/planGuard.js';
+import { getPlanCapabilitiesForPlan } from '../lib/planLimits.js';
 
 interface FlightUpdateData {
   flightId: string | number;
@@ -486,7 +488,9 @@ export function setupFlightsWebsocket(httpServer: HTTPServer): SocketIOServer {
       'contactMe',
       async ({ flightId, message, station, position }: ContactMeData) => {
         const sessionId = socket.data.sessionId;
-        if (socket.data.role !== 'controller') {
+        const controllerUserId = socket.handshake.query.userId as string | undefined;
+
+        if (socket.data.role !== 'controller' || !controllerUserId) {
           socket.emit('flightError', {
             action: 'contactMe',
             flightId,
@@ -496,7 +500,23 @@ export function setupFlightsWebsocket(httpServer: HTTPServer): SocketIOServer {
           });
           return;
         }
+
         try {
+          const plan = await getUserPlan(controllerUserId);
+          const capabilities = getPlanCapabilitiesForPlan(plan);
+          if (!capabilities.pdcAtis) {
+            socket.emit('flightError', {
+              action: 'contactMe',
+              flightId,
+              station,
+              position,
+              error: 'Upgrade required',
+              requiredPlan: 'basic',
+              currentPlan: plan,
+            });
+            return;
+          }
+
           validateFlightId(flightId);
           const allSessions = await getAllSessions();
           let targetSessionId = sessionId;

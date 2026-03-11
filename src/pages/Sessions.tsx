@@ -39,7 +39,7 @@ interface AvailableImage {
 export default function Sessions() {
   const { user, isLoading } = useAuth();
   const { settings } = useSettings();
-  const { effectiveLimits } = useEffectivePlan();
+  const { effectiveLimits, effectivePlan } = useEffectivePlan();
   const [sessions, setSessions] = useState<SessionInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -56,6 +56,11 @@ export default function Sessions() {
   const maxSessions = hasSpecialRole
     ? Math.max(50, planMaxSessions)
     : planMaxSessions || 10;
+  const sessionLimitReason = hasSpecialRole && maxSessions > planMaxSessions
+    ? user?.isAdmin
+      ? 'Limit includes extra slots for your Admin role.'
+      : 'Limit includes extra slots for your Tester role.'
+    : `Limit is based on your ${effectivePlan} plan.`;
 
   useEffect(() => {
     if (!user) {
@@ -254,26 +259,32 @@ export default function Sessions() {
             MY SESSIONS
           </h1>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full px-4">
-            <div className="flex items-center justify-center gap-2 px-6 py-4 bg-blue-600/20 backdrop-blur-md border border-blue-500/30 rounded-full shadow-lg h-12 sm:h-auto">
-              <FolderOpen className="h-5 w-5 text-blue-400" />
-              <span className="text-blue-400 text-sm font-semibold tracking-wider whitespace-nowrap">
-                {sessions.length}/{maxSessions} SESSION
-                {sessions.length === 1 ? '' : 'S'}
-              </span>
+          <div className="flex flex-col items-center justify-center w-full px-4 gap-2">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
+              <div className="flex flex-col items-center justify-center gap-1 px-6 py-4 bg-blue-600/20 backdrop-blur-md border border-blue-500/30 rounded-full shadow-lg sm:h-auto">
+                <div className="flex items-center justify-center gap-2">
+                  <FolderOpen className="h-5 w-5 text-blue-400" />
+                  <span className="text-blue-400 text-sm font-semibold tracking-wider whitespace-nowrap">
+                    {sessions.length}/{maxSessions} SESSION
+                    {sessions.length === 1 ? '' : 'S'}
+                  </span>
+                </div>
+              </div>
+              <Button
+                onClick={() => (window.location.href = '/create')}
+                size="md"
+                disabled={sessions.length >= maxSessions}
+                className={`
+                  whitespace-nowrap w-full sm:w-auto
+                  ${sessions.length >= maxSessions ? 'opacity-50 cursor-not-allowed' : ''}
+                `}
+              >
+                Create New Session
+              </Button>
             </div>
-
-            <Button
-              onClick={() => (window.location.href = '/create')}
-              size="md"
-              disabled={sessions.length >= maxSessions}
-              className={`
-                whitespace-nowrap w-full sm:w-auto
-                ${sessions.length >= maxSessions ? 'opacity-50 cursor-not-allowed' : ''}
-              `}
-            >
-              Create New Session
-            </Button>
+            <p className="text-[11px] text-blue-200/80 text-center mt-1">
+              {sessionLimitReason}
+            </p>
           </div>
         </div>
       </div>
