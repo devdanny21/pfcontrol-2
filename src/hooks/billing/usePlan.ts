@@ -191,24 +191,18 @@ const ULTIMATE_CAPABILITIES: PlanCapabilities = {
   earlyAccess: true,
 };
 
-const CANARY_HOSTNAME = 'canary.pfcontrol.com';
-
 export function useEffectivePlan() {
   const { user } = useAuth();
   const planData = usePlan();
 
   const isAdmin = !!user?.isAdmin;
   const isTester = !!user?.isTester;
-  const isCanary =
-    typeof window !== 'undefined' &&
-    window.location.hostname === CANARY_HOSTNAME;
-  const grantTesterUltimate = isTester && !isCanary;
 
   const effectivePlan: Plan =
-    isAdmin || grantTesterUltimate ? 'ultimate' : planData.plan;
+    isAdmin || isTester ? 'ultimate' : planData.plan;
 
   const effectiveCapabilities: PlanCapabilities =
-    isAdmin || grantTesterUltimate
+    isAdmin || isTester
       ? { ...planData.capabilities, ...ULTIMATE_CAPABILITIES }
       : planData.capabilities;
 
