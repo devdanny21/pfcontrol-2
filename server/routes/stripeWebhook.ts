@@ -1,7 +1,7 @@
 import express from 'express';
 import { stripe } from '../lib/stripe.js';
 import { mainDb } from '../db/connection.js';
-import { invalidateUserAndUsernameCache } from '../db/users.js';
+import { invalidateUserAndUsernameCache, clearCustomBackgroundIfNeeded } from '../db/users.js';
 import Stripe from 'stripe';
 
 const router = express.Router();
@@ -139,6 +139,11 @@ async function handleSubscriptionEvent(event: Stripe.Event) {
     .execute();
 
   await invalidateUserAndUsernameCache(userId);
+
+  const effectivePlan = (plan === 'basic' || plan === 'ultimate') && status === 'active' ? plan : 'free';
+  if (effectivePlan === 'free') {
+    await clearCustomBackgroundIfNeeded(userId);
+  }
 }
 
 export default router;

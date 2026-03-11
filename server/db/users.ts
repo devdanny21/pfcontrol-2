@@ -347,6 +347,47 @@ export async function createOrUpdateUser(userData: {
   return await getUserById(id);
 }
 
+export async function clearCustomBackgroundIfNeeded(userId: string) {
+  const user = await getUserById(userId);
+  if (!user || !user.settings) return;
+
+  const settings = typeof user.settings === 'string' ? JSON.parse(user.settings) : user.settings;
+  const bg = settings.backgroundImage;
+  if (!bg) return;
+
+  const hasCustom =
+    bg.useCustomBackground ||
+    (bg.selectedImage && typeof bg.selectedImage === 'string' && bg.selectedImage.startsWith('https://api.cephie.app/'));
+
+  if (!hasCustom) return;
+
+  const updatedSettings = {
+    ...settings,
+    backgroundImage: {
+      ...bg,
+      selectedImage: null,
+      useCustomBackground: false,
+    },
+  };
+
+  const encryptedSettings = encrypt(updatedSettings);
+
+  await mainDb
+    .updateTable('users')
+    .set({
+      settings: JSON.stringify(encryptedSettings),
+      settings_updated_at: sql`NOW()`,
+      updated_at: sql`NOW()`,
+    })
+    .where('id', '=', userId)
+    .execute();
+
+  await invalidateUserCache(userId);
+  if (user.username) {
+    await invalidateUsernameCache(user.username);
+  }
+}
+
 export async function updateUserSettings(id: string, settings: Settings) {
   const existingUser = await getUserById(id);
   if (!existingUser) {

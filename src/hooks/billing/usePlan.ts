@@ -100,7 +100,7 @@ export function usePlan() {
       if (!cached) setLoading(true);
       try {
         await syncIfNeeded();
-        let res = await fetch(`${API_BASE_URL}/api/plan/me`, {
+        const res = await fetch(`${API_BASE_URL}/api/plan/me`, {
           credentials: 'include',
         });
         if (!res.ok) {
@@ -108,7 +108,6 @@ export function usePlan() {
         }
         let json = (await res.json()) as PlanResponse;
 
-        // Cross-check with Stripe for non-free plans to avoid stale state
         if (json.plan !== 'free') {
           try {
             const syncRes = await fetch(`${API_BASE_URL}/api/stripe/sync`, {
@@ -192,18 +191,24 @@ const ULTIMATE_CAPABILITIES: PlanCapabilities = {
   earlyAccess: true,
 };
 
+const CANARY_HOSTNAME = 'canary.pfcontrol.com';
+
 export function useEffectivePlan() {
   const { user } = useAuth();
   const planData = usePlan();
 
   const isAdmin = !!user?.isAdmin;
   const isTester = !!user?.isTester;
+  const isCanary =
+    typeof window !== 'undefined' &&
+    window.location.hostname === CANARY_HOSTNAME;
+  const grantTesterUltimate = isTester && !isCanary;
 
   const effectivePlan: Plan =
-    isAdmin || isTester ? 'ultimate' : planData.plan;
+    isAdmin || grantTesterUltimate ? 'ultimate' : planData.plan;
 
   const effectiveCapabilities: PlanCapabilities =
-    isAdmin || isTester
+    isAdmin || grantTesterUltimate
       ? { ...planData.capabilities, ...ULTIMATE_CAPABILITIES }
       : planData.capabilities;
 

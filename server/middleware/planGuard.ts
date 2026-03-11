@@ -11,9 +11,16 @@ export function comparePlans(userPlan: SubscriptionPlan, required: SubscriptionP
   return order.indexOf(userPlan) - order.indexOf(required);
 }
 
-export async function getUserPlan(userId: string): Promise<SubscriptionPlan> {
+const CANARY_HOST = 'canary.pfcontrol.com';
+
+export async function getUserPlan(
+  userId: string,
+  options?: { host?: string }
+): Promise<SubscriptionPlan> {
   if (isAdmin(userId)) return 'ultimate';
-  if (await isTester(userId)) return 'ultimate';
+  const host = (options?.host ?? '').toLowerCase();
+  const isCanary = host === CANARY_HOST;
+  if (!isCanary && (await isTester(userId))) return 'ultimate';
 
   const user = await getUserById(userId);
   if (!user) return 'free';
@@ -42,7 +49,8 @@ export function requirePlan(required: SubscriptionPlan) {
           return res.status(401).json({ error: 'Not authenticated' });
         }
 
-        const plan = await getUserPlan(userJwt.userId);
+        const host = req.get('host') || req.get('x-forwarded-host') || '';
+        const plan = await getUserPlan(userJwt.userId, { host });
         if (comparePlans(plan, required) < 0) {
           return res.status(402).json({
             error: 'Upgrade required',

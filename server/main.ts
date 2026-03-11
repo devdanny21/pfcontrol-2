@@ -85,9 +85,6 @@ app.use(
 );
 app.use(cookieParser());
 
-// IMPORTANT: Stripe webhooks rely on the raw body for signature verification.
-// The webhook router mounts its own express.raw() body parser, so it must run
-// before the global JSON parser.
 app.use('/api/stripe', stripeWebhookRouter);
 app.use(express.json());
 

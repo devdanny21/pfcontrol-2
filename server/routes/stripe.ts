@@ -219,12 +219,39 @@ router.post('/sync', requireAuth, async (req, res) => {
       return res.status(400).json({ error: 'No Stripe customer associated' });
     }
 
-    const subs = await stripe.subscriptions.list({
-      customer: stripeCustomerId,
-      status: 'all',
-      expand: ['data.items.data.price'],
-      limit: 10,
-    });
+    let subs: Awaited<ReturnType<typeof stripe.subscriptions.list>>;
+    try {
+      subs = await stripe.subscriptions.list({
+        customer: stripeCustomerId,
+        status: 'all',
+        expand: ['data.items.data.price'],
+        limit: 10,
+      });
+    } catch (err: unknown) {
+      const code = (err as { code?: string })?.code;
+      const param = (err as { param?: string })?.param;
+      if (code === 'resource_missing' && param === 'customer') {
+        await mainDb
+          .updateTable('users')
+          .set({
+            stripe_customer_id: null,
+            subscription_plan: 'free',
+            subscription_status: null,
+            subscription_current_period_end: null,
+            subscription_cancel_at_period_end: null,
+          })
+          .where('id', '=', user.id)
+          .execute();
+        await invalidateUserAndUsernameCache(user.id, user.username);
+        return res.json({
+          plan: 'free',
+          subscriptionStatus: null,
+          subscriptionCurrentPeriodEnd: null,
+          subscriptionCancelAtPeriodEnd: null,
+        });
+      }
+      throw err;
+    }
 
     let plan: 'free' | 'basic' | 'ultimate' = 'free';
     let status: string | null = null;

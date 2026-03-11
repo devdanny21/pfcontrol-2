@@ -1,7 +1,7 @@
 import express from 'express';
 import requireAuth from '../middleware/auth.js';
 import { getUserPlan } from '../middleware/planGuard.js';
-import { getUserById } from '../db/users.js';
+import { getUserById, clearCustomBackgroundIfNeeded } from '../db/users.js';
 import { getPlanCapabilitiesForPlan } from '../lib/planLimits.js';
 
 const router = express.Router();
@@ -18,8 +18,13 @@ router.get('/me', requireAuth, async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const plan = await getUserPlan(userId);
+    const host = req.get('host') || req.get('x-forwarded-host') || '';
+    const plan = await getUserPlan(userId, { host });
     const capabilities = getPlanCapabilitiesForPlan(plan);
+
+    if (!capabilities.customBackgrounds) {
+      await clearCustomBackgroundIfNeeded(userId);
+    }
 
     const limits = {
       maxSessions: capabilities.maxSessions,

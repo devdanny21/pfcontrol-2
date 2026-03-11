@@ -443,6 +443,7 @@ export default function BackgroundImageSettings({
           <div className="mb-6">
             <PlanUpsellSidebar
               description="Custom background images and Cephie Snap integration are available on the Basic plan and above. Upgrade to upload your own backgrounds."
+              cardsSideBySideOnDesktop
             />
           </div>
         ) : (

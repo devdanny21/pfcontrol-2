@@ -77,10 +77,12 @@ function FeatureCell({ value }: { value: FeatureValue }) {
 export type PlanUpsellSidebarProps = {
   title?: string;
   description?: string;
+  cardsSideBySideOnDesktop?: boolean;
 };
 
 export function PlanUpsellSidebar({
   description,
+  cardsSideBySideOnDesktop,
 }: PlanUpsellSidebarProps) {
   const callback = useMemo(() => {
     const path = window.location.pathname + window.location.search;
@@ -94,7 +96,13 @@ export function PlanUpsellSidebar({
           'Chat and other premium features are available on our paid plans. Choose a plan below to upgrade and support PFControl.'}
       </p>
 
-      <div className="space-y-4 overflow-y-auto">
+      <div
+        className={
+          cardsSideBySideOnDesktop
+            ? 'flex flex-col md:flex-row md:gap-4 md:space-y-0 space-y-4 overflow-y-auto'
+            : 'space-y-4 overflow-y-auto'
+        }
+      >
         {paidPlans.map((plan) => {
           const Icon = plan.icon;
           return (
@@ -102,6 +110,7 @@ export function PlanUpsellSidebar({
               key={plan.id}
               className={[
                 'relative border-2 rounded-3xl transition-transform duration-200',
+                cardsSideBySideOnDesktop ? 'md:min-w-0 md:flex-1' : '',
                 plan.id === 'ultimate'
                   ? 'bg-gradient-to-br from-blue-900 to-transparent'
                   : 'bg-gradient-to-br from-blue-900/25 to-transparent',
