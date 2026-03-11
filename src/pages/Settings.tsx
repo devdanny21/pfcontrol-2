@@ -30,7 +30,6 @@ import SoundSettings from '../components/Settings/SoundSettings';
 import LayoutSettings from '../components/Settings/LayoutSettings';
 import TableColumnSettings from '../components/Settings/TableColumnSettings';
 import AccountSettings from '../components/Settings/AccountSettings';
-import CustomBadgeSettings from '../components/Settings/CustomBadgeSettings';
 import AcarsSettings from '../components/Settings/AcarsSettings';
 import { useEffectivePlan } from '../hooks/billing/usePlan';
 import Navbar from '../components/Navbar';
@@ -373,15 +372,6 @@ export default function Settings() {
                 onChange={handleLocalSettingsChange}
               />
             </div>
-
-            {profileBadge && (
-              <div id="custom-badge-settings">
-                <CustomBadgeSettings
-                  settings={localSettings}
-                  onChange={handleLocalSettingsChange}
-                />
-              </div>
-            )}
 
             <div id="table-column-settings">
               <TableColumnSettings
