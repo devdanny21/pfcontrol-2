@@ -343,7 +343,7 @@ export default function Settings() {
           <div className="absolute inset-0 bg-gradient-to-b from-gray-950/40 via-gray-950/70 to-gray-950"></div>
         </div>
 
-        <div className="relative h-full flex flex-col items-center justify-center px-6 md:px-10 gap-4">
+        <div className="relative h-full flex flex-col items-center justify-center px-4 sm:px-6 md:px-10 gap-4">
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-tight text-center">
             YOUR SETTINGS
           </h1>
@@ -361,9 +361,9 @@ export default function Settings() {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto max-w-5xl px-4 pb-8 -mt-6 md:-mt-8 relative z-10">
-        <div className="overflow-hidden">
-          <div className="p-6 space-y-8">
+      <div className="w-full max-w-5xl mx-auto px-3 sm:px-5 md:px-6 pb-8 -mt-6 md:-mt-8 relative z-10 min-w-0">
+        <div className="overflow-hidden min-w-0">
+          <div className="py-4 sm:py-6 space-y-6 sm:space-y-8">
             <div id="account-settings">
               <AccountSettings
                 settings={localSettings}

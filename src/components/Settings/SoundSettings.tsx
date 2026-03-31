@@ -221,7 +221,7 @@ export default function SoundSettings({
             : 'max-h-0 opacity-0 overflow-hidden'
         }`}
       >
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <div className="space-y-4">
             {soundConfigs.map(({ key, label, description, color }) => {
               const soundSetting = settings.sounds[key];
