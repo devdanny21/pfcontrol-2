@@ -230,6 +230,30 @@ function Dropdown({
     return () => cancelAnimationFrame(raf);
   }, [isOpen, isMeasured, options.length, maxHeight]);
 
+  useLayoutEffect(() => {
+    if (!isOpen || !isMeasured) return;
+    const panel = dropdownRef.current;
+    if (!panel) return;
+
+    if (panel.scrollHeight <= panel.clientHeight + 1) return;
+
+    const selectedEl = panel.querySelector<HTMLElement>(
+      '[data-dropdown-selected="true"]'
+    );
+    if (!selectedEl) return;
+
+    const panelRect = panel.getBoundingClientRect();
+    const itemRect = selectedEl.getBoundingClientRect();
+    const panelCenterY = panelRect.top + panel.clientHeight / 2;
+    const itemCenterY = itemRect.top + itemRect.height / 2;
+    const delta = itemCenterY - panelCenterY;
+    const maxScroll = Math.max(0, panel.scrollHeight - panel.clientHeight);
+    const nextScrollTop = Math.round(
+      Math.max(0, Math.min(panel.scrollTop + delta, maxScroll))
+    );
+    panel.scrollTop = nextScrollTop;
+  }, [isOpen, isMeasured, value, options.length, maxHeight]);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -280,21 +304,22 @@ function Dropdown({
           Clear selection
         </button>
       )}
-      {options.map((option) => (
-        <button
-          type="button"
-          key={option.value}
-          className={`block w-full text-left px-3 py-2 rounded-xl text-sm hover:bg-blue-600 hover:text-white
-            ${
-              option.selected || option.value === value
-                ? 'bg-gray-700 font-medium'
-                : ''
+      {options.map((option) => {
+        const isSelected = option.selected || option.value === value;
+        return (
+          <button
+            type="button"
+            key={option.value}
+            data-dropdown-selected={isSelected ? true : undefined}
+            className={`block w-full text-left px-3 py-2 rounded-xl text-sm hover:bg-blue-600 hover:text-white ${
+              isSelected ? 'text-white font-medium' : 'text-gray-300'
             }`}
-          onClick={() => handleOptionClick(option.value)}
-        >
-          {renderOption ? renderOption(option) : option.label}
-        </button>
-      ))}
+            onClick={() => handleOptionClick(option.value)}
+          >
+            {renderOption ? renderOption(option) : option.label}
+          </button>
+        );
+      })}
     </div>
   );
 

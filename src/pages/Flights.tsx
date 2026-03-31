@@ -1046,7 +1046,7 @@ export default function Flights() {
                   flashingPDCIds={flashingPDCIds}
                   setFlashingPDCIds={setFlashingPDCIds}
                 />
-                <div className="flex justify-center gap-4 mt-4 mb-6">
+                <div className="flex justify-center gap-4 mt-4 pb-6">
                   <Button
                     onClick={() => setShowAddDepartureModal(true)}
                     variant="primary"
@@ -1112,7 +1112,7 @@ export default function Flights() {
                       flashFlightId={null}
                       id="departure-table"
                     />
-                    <div className="flex justify-center mt-4 mb-6">
+                    <div className="flex justify-center mt-4 pb-6">
                       <Button
                         onClick={() => setShowAddDepartureModal(true)}
                         variant="primary"
