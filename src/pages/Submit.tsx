@@ -26,7 +26,6 @@ import { addFlight } from '../utils/fetch/flights';
 import { useAuth } from '../hooks/auth/useAuth';
 import { useSettings } from '../hooks/settings/useSettings';
 import { fetchBackgrounds, fetchRoute } from '../utils/fetch/data';
-import { tryPlayAprilCowEasterEgg } from '../utils/aprilCowEasterEgg';
 import type { Flight } from '../types/flight';
 import AirportDropdown from '../components/dropdowns/AirportDropdown';
 import Dropdown from '../components/common/Dropdown';
@@ -243,7 +242,6 @@ export default function Submit() {
     e.preventDefault();
 
     if (isSubmitting) return;
-    void tryPlayAprilCowEasterEgg();
 
     setError('');
     setSuccess(false);
