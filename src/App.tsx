@@ -20,7 +20,6 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AccessDenied from './components/AccessDenied';
 import UpdateOverviewModal from './components/modals/UpdateOverviewModal';
 import CanaryModal from './components/modals/CanaryModal';
-import DVDLogoOverlay from './components/common/DVDLogoOverlay';
 
 const Admin = lazy(() => import('./pages/Admin'));
 const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'));
@@ -131,7 +130,6 @@ export default function App() {
 
   return (
     <Router>
-      <DVDLogoOverlay />
       <CanaryModal />
 
       {activeModal &&
