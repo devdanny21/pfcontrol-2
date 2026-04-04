@@ -2,6 +2,12 @@ import express from 'express';
 import { getAppVersion, updateAppVersion } from '../db/version.js';
 import { redisConnection } from '../db/connection.js';
 import requireAuth from '../middleware/auth.js';
+import { applyPublicCache } from '../utils/httpCache.js';
+import {
+  APP_VERSION_BROWSER_SEC,
+  APP_VERSION_EDGE_SEC,
+  APP_VERSION_REDIS_SEC,
+} from '../utils/cacheTtl.js';
 
 const router = express.Router();
 
@@ -12,6 +18,10 @@ router.get('/', async (req, res) => {
   try {
     const cached = await redisConnection.get(cacheKey);
     if (cached) {
+      applyPublicCache(res, {
+        browserMaxAge: APP_VERSION_BROWSER_SEC,
+        edgeMaxAge: APP_VERSION_EDGE_SEC,
+      });
       return res.json(JSON.parse(cached));
     }
   } catch (error) {
@@ -31,7 +41,7 @@ router.get('/', async (req, res) => {
         cacheKey,
         JSON.stringify(versionData),
         'EX',
-        86400
+        APP_VERSION_REDIS_SEC
       );
     } catch (error) {
       if (error instanceof Error) {
@@ -42,6 +52,10 @@ router.get('/', async (req, res) => {
       }
     }
 
+    applyPublicCache(res, {
+      browserMaxAge: APP_VERSION_BROWSER_SEC,
+      edgeMaxAge: APP_VERSION_EDGE_SEC,
+    });
     res.json(versionData);
   } catch (error) {
     console.error('Error fetching app version:', error);
@@ -75,7 +89,7 @@ router.put('/', requireAuth, async (req, res) => {
         cacheKey,
         JSON.stringify(updatedVersion),
         'EX',
-        86400
+        APP_VERSION_REDIS_SEC
       );
     } catch (error) {
       if (error instanceof Error) {

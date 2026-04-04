@@ -155,7 +155,7 @@ export default function TableColumnSettings({
             : 'max-h-0 opacity-0 overflow-hidden'
         }`}
       >
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <div className="space-y-8">
             <div>
               <div className="flex items-center mb-4">

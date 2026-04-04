@@ -1,4 +1,5 @@
 import { mainDb } from './connection.js';
+import { APP_VERSION_REDIS_SEC } from '../utils/cacheTtl.js';
 
 export async function getAppVersion() {
   const result = await mainDb
@@ -27,7 +28,12 @@ export async function getAppVersion() {
 
     try {
       const { redisConnection } = await import('./connection.js');
-      await redisConnection.set('app:version', JSON.stringify(defaultVersion));
+      await redisConnection.set(
+        'app:version',
+        JSON.stringify(defaultVersion),
+        'EX',
+        APP_VERSION_REDIS_SEC
+      );
     } catch (error) {
       console.warn('[Redis] Failed to set version cache:', error);
     }
@@ -42,7 +48,12 @@ export async function getAppVersion() {
 
   try {
     const { redisConnection } = await import('./connection.js');
-    await redisConnection.set('app:version', JSON.stringify(versionData));
+    await redisConnection.set(
+      'app:version',
+      JSON.stringify(versionData),
+      'EX',
+      APP_VERSION_REDIS_SEC
+    );
   } catch (error) {
     console.warn('[Redis] Failed to set version cache:', error);
   }

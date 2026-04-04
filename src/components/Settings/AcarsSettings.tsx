@@ -303,7 +303,7 @@ export default function AcarsSettings({
             : 'max-h-0 opacity-0 overflow-hidden'
         }`}
       >
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <div className="space-y-6">
             {/* Panel Toggles */}
             <div className="bg-zinc-800/30 border border-zinc-700/50 rounded-xl p-5">

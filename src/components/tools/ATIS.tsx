@@ -423,10 +423,13 @@ export default function ATIS({
 
       <div className="flex-1 overflow-y-auto p-5 space-y-6">
         {(isLoading || isLoadingPreviousATIS) && (
-          <div className="flex items-center justify-center p-4">
-            <Loader />
+          <div className="flex items-center justify-center gap-2 p-4">
+            <Loader
+              className="h-6 w-6 shrink-0 animate-spin text-blue-400"
+              aria-hidden
+            />
             {isLoadingPreviousATIS && (
-              <span className="ml-2 text-sm text-gray-400">
+              <span className="text-sm text-gray-400">
                 Loading previous ATIS data...
               </span>
             )}
