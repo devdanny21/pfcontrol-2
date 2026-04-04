@@ -5,6 +5,7 @@ import { requirePermission } from '../../middleware/rolePermissions.js';
 import { getDailyStatistics, getTotalStatistics } from '../../db/admin.js';
 import { getAppVersion, updateAppVersion } from '../../db/version.js';
 import { redisConnection } from '../../db/connection.js';
+import { APP_VERSION_REDIS_SEC } from '../../utils/cacheTtl.js';
 
 import usersRouter from './users.js';
 import sessionsRouter from './sessions.js';
@@ -107,7 +108,7 @@ router.put(
           cacheKey,
           JSON.stringify(updatedVersion),
           'EX',
-          86400
+          APP_VERSION_REDIS_SEC
         );
       } catch (error) {
         if (error instanceof Error) {
