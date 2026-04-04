@@ -62,7 +62,7 @@ docker-compose -f docker-compose.dev.yml up -d
 - **"Cannot connect to the Docker daemon"**: Make sure Docker Desktop is running. Open the Docker Desktop application before running docker-compose commands
 - **"Cannot connect to PostgreSQL"**: Make sure Docker Compose is running (`docker ps` should show postgres and redis containers)
 - **"Port 5432 already in use"**: You might have PostgreSQL installed locally. Either stop your local PostgreSQL or change the port mapping in `docker-compose.dev.yml`
-- **Need help?** Join our [Discord server](https://pfconnect.online/discord), create a ticket, and we'll help you out
+- **Need help?** Join our [Discord server](https://cephie.app/discord), create a ticket, and we'll help you out
 
 ## Project structure
 
@@ -72,7 +72,7 @@ docker-compose -f docker-compose.dev.yml up -d
 
 ## Code of Conduct
 
-We are committed to a welcoming, inclusive, and harassment-free community for everyone. All participants are expected to be respectful, considerate, and constructive. Unacceptable behavior such as harassment, discrimination, or personal attacks will not be tolerated. Community leaders enforce these standards and may take corrective action when necessary. Reports of misconduct can be sent to [support@pfconnect.online](mailto:support@pfconnect.online). See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) for full details.
+We are committed to a welcoming, inclusive, and harassment-free community for everyone. All participants are expected to be respectful, considerate, and constructive. Unacceptable behavior such as harassment, discrimination, or personal attacks will not be tolerated. Community leaders enforce these standards and may take corrective action when necessary. Reports of misconduct can be sent to [support@pfconnect.online](mailto:support@cephie.app). See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) for full details.
 
 ## License
 
@@ -83,4 +83,4 @@ See the [LICENSE](./LICENSE) file for full details.
 ## Support & Contact
 
 - Open issues on GitHub for bugs or feature requests.
-- Join our Discord server for discussions and support. [Invite Link](https://pfconnect.online/discord)
+- Join our Discord server for discussions and support. [Invite Link](https://cephie.app/discord)
