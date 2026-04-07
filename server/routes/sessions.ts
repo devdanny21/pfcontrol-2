@@ -195,7 +195,7 @@ router.get('/:sessionId', requireSessionAccess, async (req, res) => {
     let atis = { letter: 'A', text: '', timestamp: new Date().toISOString() };
     if (session.atis) {
       try {
-        const parsed = JSON.parse(session.atis);
+        const parsed = JSON.parse(session.atis as string);
         atis = decrypt(parsed);
       } catch (err) {
         console.error('Error decrypting ATIS:', err);
@@ -246,7 +246,7 @@ router.put('/:sessionId', requireSessionAccess, async (req, res) => {
     };
     if (session.atis) {
       try {
-        const parsed = JSON.parse(session.atis);
+        const parsed = JSON.parse(session.atis as string);
         decryptedAtis = decrypt(parsed);
       } catch (err) {
         console.error('Error decrypting ATIS:', err);

@@ -40,7 +40,7 @@ router.get(
       let query = mainDb
         .selectFrom('chat_report')
         .selectAll()
-        .orderBy('timestamp', 'desc');
+        .orderBy('created_at', 'desc');
       if (filterReporter) {
         query = query.where('reporter_user_id', '=', filterReporter);
       }
