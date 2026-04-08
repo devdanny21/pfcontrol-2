@@ -2,6 +2,8 @@ import { mainDb } from './connection.js';
 import { encrypt, decrypt } from '../utils/encryption.js';
 import { sql } from 'kysely';
 
+const FLIGHT_LOG_RETENTION_DAYS = 365;
+
 export interface FlightLogData {
   userId: string;
   username: string;
@@ -60,7 +62,9 @@ export async function logFlightAction(logData: FlightLogData) {
   }
 }
 
-export async function cleanupOldFlightLogs(daysToKeep = 30) {
+export async function cleanupOldFlightLogs(
+  daysToKeep = FLIGHT_LOG_RETENTION_DAYS
+) {
   try {
     const result = await mainDb
       .deleteFrom('flight_logs')
@@ -85,7 +89,7 @@ export function startFlightLogsCleanup() {
 
   setTimeout(async () => {
     try {
-      await cleanupOldFlightLogs(30);
+      await cleanupOldFlightLogs(FLIGHT_LOG_RETENTION_DAYS);
     } catch (error) {
       console.error('Initial flight logs cleanup failed:', error);
     }
@@ -93,7 +97,7 @@ export function startFlightLogsCleanup() {
 
   cleanupInterval = setInterval(async () => {
     try {
-      await cleanupOldFlightLogs(30);
+      await cleanupOldFlightLogs(FLIGHT_LOG_RETENTION_DAYS);
     } catch (error) {
       console.error('Scheduled flight logs cleanup failed:', error);
     }
