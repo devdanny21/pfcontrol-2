@@ -1,8 +1,8 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vite-plus';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
-// https://vite.dev/config/
+// https://viteplus.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
@@ -14,5 +14,11 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     strictPort: true,
+  },
+  test: {
+    environment: 'node',
+    setupFiles: ['tests/setup/vitestSetup.ts'],
+    include: ['tests/**/*.{test,spec}.{ts,tsx}'],
+    exclude: ['**/node_modules/**', 'dist/**', 'server/dist/**'],
   },
 });
