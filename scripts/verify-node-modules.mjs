@@ -11,11 +11,23 @@ if (!existsSync(nm)) {
 }
 
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'))
-const deps = {
-  ...pkg.dependencies,
-  ...pkg.devDependencies,
-  ...(pkg.optionalDependencies ?? {}),
-}
+
+const omit = (process.env.npm_config_omit ?? '')
+  .split(/[,+]/)
+  .map((s) => s.trim())
+  .filter(Boolean)
+const omitDev = omit.includes('dev')
+
+const deps = omitDev
+  ? {
+    ...pkg.dependencies,
+    ...(pkg.optionalDependencies ?? {}),
+  }
+  : {
+    ...pkg.dependencies,
+    ...pkg.devDependencies,
+    ...(pkg.optionalDependencies ?? {}),
+  }
 
 for (const name of Object.keys(deps)) {
   const segments = name.split('/')
