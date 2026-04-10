@@ -5,8 +5,9 @@ RUN apk add --no-cache dumb-init
 
 WORKDIR /app
 
-# Copy package files
+# Copy package files and postinstall script
 COPY package*.json ./
+COPY scripts ./scripts
 
 # Install all dependencies (including dev dependencies)
 RUN npm install
