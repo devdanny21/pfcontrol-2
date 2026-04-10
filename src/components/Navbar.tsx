@@ -10,6 +10,7 @@ import {
   ShieldX,
   ChevronDown,
   ChevronUp,
+  HelpCircle
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useNotifications } from '../hooks/useNotifications';
@@ -347,6 +348,28 @@ export default function Navbar({
 
             {sessionId && accessId && (
               <div className="flex-1 flex justify-center items-center space-x-3">
+                <div className="relative hidden md:block">
+                  <a
+                    href="https://cephie.app/discord"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center font-medium focus:outline-none bg-yellow-600 hover:bg-yellow-700 text-white shadow-lg hover:shadow-xl border-2 border-yellow-600 rounded-full px-4 py-2 text-sm relative overflow-hidden transition-all duration-300"
+                  >
+                    <div className="flex items-center space-x-2 transition-transform duration-300">
+                      {isCompact ? (
+                        <HelpCircle
+                          className="h-4 w-4"
+                          aria-label="Support"
+                        />
+                      ) : (
+                        <>
+                          <HelpCircle className="h-4 w-4" />
+                          <span className="font-medium">Support</span>
+                        </>
+                      )}
+                    </div>
+                  </a>
+                </div>
                 <span
                   id="utc-time"
                   className="text-white font-mono text-sm px-3 py-1.5 rounded-lg hidden sm:inline"
